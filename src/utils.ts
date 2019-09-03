@@ -1,7 +1,7 @@
-import axios from 'axios';
 import * as Docker from 'dockerode';
 import { ContainerCreateOptions } from 'dockerode';
 import * as fs from 'fs-extra';
+import * as request from 'request-promise-native';
 import * as Stream from 'stream';
 
 const isUrl = require('is-url');
@@ -112,28 +112,40 @@ export function checkRequirement(ctx: YamlAndManager) {
 export async function getManagerInfo(addon: string, registry: string) {
   // {"query":"divio/django","result":{"id":"1cb5b9e0-b57a-4951-b8da-51dfa94d42be","identifier":"divio/django:1.11.20.4"}}
   try {
-    const r = await axios.post(`${registry}/addonversions/resolve/`, {
-      query: addon,
+    const { result } = await request({
+      url: `${registry}/addonversions/resolve/`,
+      form: {
+        query: addon,
+      },
+      method: 'POST',
+      json: true,
     });
 
-    const result = r.data.result;
+    const gr = await request({
+      url: `${registry}/addonversions/${result.id}/`,
+      json: true,
+    });
 
-    const gr = await axios.get(`${registry}/addonversions/${result.id}/`);
-
-    const platform = await axios.get(gr.data.platforms[0]);
+    const platform = await request({
+      url: gr.platforms[0],
+      json: true,
+    });
 
     return {
-      fam: `flavour/fam-${platform.data.identifier}`,
-      yaml: gr.data.yaml,
+      fam: `flavour/fam-${platform.identifier}`,
+      yaml: gr.yaml,
     };
   } catch (e) {
-    throw new Error(e.response.data.non_field_errors);
+    throw new Error(e.error.non_field_errors);
   }
 }
 
 export async function getYaml(pathOrUrl: string): Promise<string> {
   if (isUrl(pathOrUrl)) {
-    const response = await axios.get(pathOrUrl);
+    const response = await request({
+      url: pathOrUrl,
+      json: true,
+    });
 
     return response.data;
   }
