@@ -12,7 +12,6 @@
     "@oclif/config": "^1.13.0",
     "@oclif/plugin-autocomplete": "^0.1.0",
     "@oclif/plugin-help": "^2.1.6",
-    "axios": "^0.18.0",
     "dockerode": "^2.5.8",
     "fs-extra": "^8.0.1",
     "indent-string": "^4.0.0",
