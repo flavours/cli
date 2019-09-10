@@ -1,5 +1,6 @@
 import * as Docker from 'dockerode';
 import { ContainerCreateOptions } from 'dockerode';
+import * as execa from 'execa';
 import * as fs from 'fs-extra';
 import * as request from 'request-promise-native';
 import * as Stream from 'stream';
@@ -18,6 +19,15 @@ async function dockerRunWithStdIn(
   options: ContainerCreateOptions,
   stdin: Buffer | string
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
+  const extra: { User?: string } = {};
+  if (process.platform === 'linux') {
+    const [uid, gid] = await Promise.all([
+      execa.command('id -u'),
+      execa.command('id -g'),
+    ]).then(([{ stdout: uid }, { stdout: gid }]) => [uid, gid]);
+
+    extra.User = `${uid}:${gid}`;
+  }
   const container = await docker.createContainer({
     OpenStdin: true,
     StdinOnce: true,
@@ -79,6 +89,7 @@ async function runDockerCommand(
 ) {
   const { fam, yaml, projectRoot, cache } = ctx;
 
+  // TODO pull if doesn't exist
   if (!cache) {
     await docker.pull(fam, {});
   }
