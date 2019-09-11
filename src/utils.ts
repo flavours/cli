@@ -14,6 +14,31 @@ interface DockerRunError extends Error {
   stdout?: string;
   stderr?: string;
 }
+
+export async function imageExists(imageName: string) {
+  const images = await docker.listImages({
+    filters: { reference: [imageName] },
+  });
+  return images.length > 0;
+}
+
+async function pullImage(image: string) {
+  return new Promise((resolve, reject) => {
+    docker.pull(image, {}, function(error, stream) {
+      if (error) {
+        reject(error);
+      }
+
+      docker.modem.followProgress(stream, (err: Error | null) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  });
+}
 async function dockerRunWithStdIn(
   docker: Docker,
   options: ContainerCreateOptions,
@@ -89,15 +114,16 @@ async function runDockerCommand(
 ) {
   const { fam, yaml, projectRoot, cache } = ctx;
 
-  // TODO pull if doesn't exist
-  if (!cache) {
-    await docker.pull(fam, {});
+  const image = fam.match(/\:/) ? fam : `${fam}:latest`;
+
+  if (!cache || !(await imageExists(image))) {
+    await pullImage(image);
   }
 
   return dockerRunWithStdIn(
     docker,
     {
-      Image: fam,
+      Image: image,
       HostConfig: {
         AutoRemove: true,
         Binds: [`${projectRoot}:/app`],
