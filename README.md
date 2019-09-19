@@ -26,6 +26,12 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+
+# Other install method
+```sh
+curl https://flavours.dev/cli/install.sh | sh
+```
+
 # Commands
 <!-- commands -->
 * [`flavour add [ADDONS]`](#flavour-add-addons)
