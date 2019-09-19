@@ -30,7 +30,7 @@ USAGE
 
 # Other install method
 ```sh
-curl https://flavours.dev/cli/install.sh | sh
+curl -L https://flavours.dev/cli/install.sh | sh
 ```
 
 # Commands
