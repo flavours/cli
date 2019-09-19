@@ -37,6 +37,7 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.14.7",
     "@types/request-promise-native": "^1.0.16",
+    "aws-sdk": "^2.531.0",
     "chai": "^4.2.0",
     "globby": "^8.0.2",
     "mocha": "^5.2.0",
