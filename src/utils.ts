@@ -113,26 +113,33 @@ async function runDockerCommand(
   command: 'add' | 'remove' | 'check',
   ctx: YamlAndManager
 ) {
-  const { fam, yaml, projectRoot, cache } = ctx;
+  try {
+    const { fam, yaml, projectRoot, cache } = ctx;
 
-  const image = fam.match(/\:/) ? fam : `${fam}:latest`;
+    const image = fam.match(/\:/) ? fam : `${fam}:latest`;
 
-  if (!cache || !(await imageExists(image))) {
-    await pullImage(image);
-  }
+    if (!cache || !(await imageExists(image))) {
+      await pullImage(image);
+    }
 
-  return dockerRunWithStdIn(
-    docker,
-    {
-      Image: image,
-      HostConfig: {
-        AutoRemove: true,
-        Binds: [`${projectRoot}:/app`],
+    return await dockerRunWithStdIn(
+      docker,
+      {
+        Image: image,
+        HostConfig: {
+          AutoRemove: true,
+          Binds: [`${projectRoot}:/app`],
+        },
+        Cmd: [command],
       },
-      Cmd: [command],
-    },
-    yaml
-  );
+      yaml
+    );
+  } catch (e) {
+    if (e.code === 'ECONNREFUSED') {
+      throw new Error(`Couldn't connect to Docker daemon. Is Docker running?`);
+    }
+    throw e;
+  }
 }
 
 export function addRequirement(ctx: YamlAndManager) {
