@@ -57,6 +57,7 @@ async function dockerRunWithStdIn(
     OpenStdin: true,
     StdinOnce: true,
     ...options,
+    ...extra,
   });
 
   const stream = await container.attach({
