@@ -171,13 +171,13 @@ export async function getManagerInfo(addon: string, registry: string) {
       json: true,
     });
 
-    const platform = await request({
-      url: gr.platforms[0],
+    const stack = await request({
+      url: gr.stacks[0],
       json: true,
     });
 
     return {
-      fam: `flavour/fam-${platform.identifier}`,
+      fam: `flavour/fam-${stack.identifier}`,
       yaml: gr.yaml,
     };
   } catch (e) {
