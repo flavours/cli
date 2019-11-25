@@ -20,7 +20,7 @@ $ npm install -g @flavour/cli
 $ flavour COMMAND
 running command...
 $ flavour (-v|--version|version)
-@flavour/cli/0.7.2 darwin-x64 node-v10.15.3
+@flavour/cli/0.7.3 darwin-x64 node-v10.15.3
 $ flavour --help [COMMAND]
 USAGE
   $ flavour COMMAND
@@ -66,7 +66,7 @@ EXAMPLE
   $ flavour add addon1 addon2
 ```
 
-_See code: [src/commands/add.ts](https://github.com/flavour/cli/blob/v0.7.2/src/commands/add.ts)_
+_See code: [src/commands/add.ts](https://github.com/flavour/cli/blob/v0.7.3/src/commands/add.ts)_
 
 ## `flavour autocomplete [SHELL]`
 
@@ -114,7 +114,7 @@ EXAMPLE
   $ flavour check addon1 addon2
 ```
 
-_See code: [src/commands/check.ts](https://github.com/flavour/cli/blob/v0.7.2/src/commands/check.ts)_
+_See code: [src/commands/check.ts](https://github.com/flavour/cli/blob/v0.7.3/src/commands/check.ts)_
 
 ## `flavour help [COMMAND]`
 
@@ -157,7 +157,7 @@ EXAMPLE
   $ flavour remove addon1 addon2
 ```
 
-_See code: [src/commands/remove.ts](https://github.com/flavour/cli/blob/v0.7.2/src/commands/remove.ts)_
+_See code: [src/commands/remove.ts](https://github.com/flavour/cli/blob/v0.7.3/src/commands/remove.ts)_
 
 ## `flavour update [CHANNEL]`
 
